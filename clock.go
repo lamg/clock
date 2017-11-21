@@ -31,3 +31,30 @@ func (c *TClock) Now() (t time.Time) {
 	c.Time, t = c.Time.Add(c.Intv), c.Time
 	return
 }
+
+// TLClock is a clock that uses a circular
+// list of time.Time
+type TLClock struct {
+	ls []time.Time
+	n  int
+}
+
+// NewTLClock creates a new TLClock using a non-empty
+// slice
+func NewTLClock(ls []time.Time) (c *TLClock) {
+	if len(ls) > 0 {
+		c = &TLClock{ls, 0}
+	}
+	return
+}
+
+// Now returns the current time
+func (c *TLClock) Now() (t time.Time) {
+	t = c.ls[c.n]
+	if c.n == len(c.ls) {
+		c.n = 0
+	} else {
+		c.n = c.n + 1
+	}
+	return
+}
